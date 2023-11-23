@@ -12,6 +12,31 @@ void main() {
   ));
 }
 
+class SliderData extends ChangeNotifier {
+  double _value = 0.0;
+  double get value => _value;
+  set value(double newValue) {
+    if (newValue != _value) {
+      _value = newValue;
+      notifyListeners();
+    }
+  }
+}
+
+final sliderData = SliderData();
+
+class SliderInheritedNotifier extends InheritedNotifier<SliderData> {
+  const SliderInheritedNotifier({
+    Key? key,
+    required SliderData sliderData,
+    required Widget child,
+  }) : super(
+          key: key,
+          notifier: sliderData,
+          child: child,
+        );
+}
+
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
@@ -30,24 +55,24 @@ class HomePage extends StatelessWidget {
           ),
           Row(
             children: [
-              Expanded(
-                child: Container(
-                  color: Colors.yellow,
-                  height: 150,
-                  width: 100,
-                ),
+              Container(
+                color: Colors.yellow,
+                height: 150,
               ),
-              Expanded(
-                child: Container(
-                  color: Colors.blue,
-                  height: 150,
-                  width: 100,
-                ),
+              Container(
+                color: Colors.blue,
+                height: 150,
               ),
-            ],
+            ].expandedEqually().toList(),
           )
         ],
       ),
     );
   }
+}
+
+extension ExpandEqually on Iterable<Widget> {
+  Iterable<Widget> expandedEqually() => map(
+        (w) => Expanded(child: w),
+      );
 }

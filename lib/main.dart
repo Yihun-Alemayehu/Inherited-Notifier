@@ -35,6 +35,13 @@ class SliderInheritedNotifier extends InheritedNotifier<SliderData> {
           notifier: sliderData,
           child: child,
         );
+
+  static double of(BuildContext context) =>
+      context
+          .dependOnInheritedWidgetOfExactType<SliderInheritedNotifier>()
+          ?.notifier
+          ?.value ??
+      0.0;
 }
 
 class HomePage extends StatelessWidget {
@@ -47,25 +54,38 @@ class HomePage extends StatelessWidget {
         title: const Text('Home Page'),
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          Slider(
-            value: 0.0,
-            onChanged: ((value) {}),
-          ),
-          Row(
+      body: SliderInheritedNotifier(
+        sliderData: sliderData,
+        child: Builder(builder: (context) {
+          return Column(
             children: [
-              Container(
-                color: Colors.yellow,
-                height: 150,
+              Slider(
+                value: SliderInheritedNotifier.of(context),
+                onChanged: ((value) {
+                  sliderData.value = value;
+                }),
               ),
-              Container(
-                color: Colors.blue,
-                height: 150,
-              ),
-            ].expandedEqually().toList(),
-          )
-        ],
+              Row(
+                children: [
+                  Opacity(
+                    opacity: SliderInheritedNotifier.of(context),
+                    child: Container(
+                      color: Colors.yellow,
+                      height: 150,
+                    ),
+                  ),
+                  Opacity(
+                    opacity: SliderInheritedNotifier.of(context),
+                    child: Container(
+                      color: Colors.blue,
+                      height: 150,
+                    ),
+                  ),
+                ].expandedEqually().toList(),
+              )
+            ],
+          );
+        }),
       ),
     );
   }
